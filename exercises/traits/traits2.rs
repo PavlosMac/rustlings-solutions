@@ -10,14 +10,20 @@
 // No boiler plate code this time,
 // you can do this!
 
-// I AM NOT DONE
+use std::vec::Vec;
 
 trait AppendBar {
     fn append_bar(self) -> Self;
 }
 
 //TODO: Add your code here
-
+impl AppendBar for Vec<String> {
+    fn append_bar(mut self) -> Self {
+        self.push("Bar".to_owned());
+        self
+    }
+}
+// to_vec Copies self into a new Vec
 #[cfg(test)]
 mod tests {
     use super::*;

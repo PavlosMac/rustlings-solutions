@@ -12,8 +12,6 @@ struct Color {
     blue: u8,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
 // You need to create an implementation for a tuple of three integers,
@@ -26,19 +24,42 @@ struct Color {
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {}
+    fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+            if u8::try_from(tuple.0).is_ok() && u8::try_from(tuple.1).is_ok() && u8::try_from(tuple.2).is_ok() {
+                return Ok(Color{ red: tuple.0 as u8, green: tuple.1 as u8, blue: tuple.2 as u8 });
+            }else {
+                return Err("Oops".into());
+            }
+    }
 }
 
-// Array implementation
+// // Array implementation
 impl TryFrom<[i16; 3]> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {}
+    fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+
+        if arr.iter().all(|x| u8::try_from(x.clone()).is_ok()) {
+            return Ok(Color{red: arr[0] as u8, green: arr[1] as u8, blue: arr[2] as u8});
+        } else {
+            return Err("OOps".into());
+        }
+    }
 }
 
-// Slice implementation
+// // // Slice implementation
 impl TryFrom<&[i16]> for Color {
     type Error = Box<dyn error::Error>;
-    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {}
+    fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() > 3 || slice.len() < 3 {
+            return Err("Slice too long".into());
+        }
+        for i in slice {
+            if ! u8::try_from(i.clone()).is_ok() {
+                return Err("Not u8".into());
+            }
+        }
+        Ok(Color{red: slice[0] as u8, green: slice[1] as u8, blue: slice[2] as u8})
+    }
 }
 
 fn main() {
@@ -51,10 +72,10 @@ fn main() {
     println!("{:?}", c2);
 
     let v = vec![183, 65, 14];
-    // With slice we should use `from` function
+    // // With slice we should use `from` function
     let c3 = Color::try_from(&v[..]);
     println!("{:?}", c3);
-    // or take slice within round brackets and use Into
+    // // // or take slice within round brackets and use Into
     let c4: Result<Color, _> = (&v[..]).try_into();
     println!("{:?}", c4);
 }
